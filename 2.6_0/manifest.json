@@ -1,0 +1,24 @@
+{
+   "background": {
+      "persistent": true,
+      "scripts": [ "HTT-background.js" ]
+   },
+   "content_scripts": [ {
+      "css": [ "htt.css" ],
+      "js": [ "HTT-contentscript.js" ],
+      "matches": [ "http://*/*", "https://*/*" ]
+   } ],
+   "description": "Translate Hebrew to English and vice-versa via tooltip",
+   "icons": {
+      "128": "HTT-128.png",
+      "16": "HTT-16.png",
+      "48": "HTT-48.png"
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDqyEy3zlxxEqV9rHkOcuMxQaIidymacgI+u3Oq12y/YAHzi5lW8I1HIfJ/7JNwcgvabzIx0FFMpGup8Bx6GKukpc899s2y9Qdy5sg4CWnaQBsyzssUgocRh1d719yWkqFf5wPo4OgOWFToONM/uNlcqIkn8ZXw2e4t18TXVpUsBQIDAQAB",
+   "manifest_version": 2,
+   "name": "Hebrew Tooltip Translation for Google Chrome™",
+   "options_page": "HTT-options.html",
+   "permissions": [ "http://www.morfix.co.il/*" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "2.6"
+}
