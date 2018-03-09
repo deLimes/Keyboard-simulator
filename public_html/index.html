@@ -1307,8 +1307,9 @@
                     drawChart(ChartStatisticsSetForPeriod, chart_div2, 'День');
 
                     //Filetxt.files[0] = JSON.parse(localStorage.getItem("Filetxt"));
-                    Filetxt.files[0] = localStorage.getItem("Filetxt");
-                    Filetxt.value = localStorage.getItem("Filetxtvalue");
+                    ////////09.03.2018-Запрещено браузером в целях безопасности 
+                    /////////Filetxt.files[0] = localStorage.getItem("Filetxt");                    
+                    /////////Filetxt.value = localStorage.getItem("Filetxtvalue");
                 } else {
                     window.open("https://translate.google.com/?hl=ru#" + window.location.href);
                 }
