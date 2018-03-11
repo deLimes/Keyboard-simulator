@@ -706,8 +706,12 @@
                     Text.push(str);
                     while ((pos = end) !== -1) {
                         start = end + 1;
-                        end = contents.indexOf("\n", start);
-                        str = contents.substring(start, end - 1) + '¶';
+                        end = contents.indexOf("\n", start);                        
+                        if(end == -1){
+                            str = contents.substring(start) + '¶';
+                        }else{
+                            str = contents.substring(start, end - 1) + '¶';
+                        }
                         Text.push(str);
                     }
                     LoadingIndicator.hidden = true;
@@ -817,6 +821,12 @@
                         Progressbar.value = NumberOfRows.value;
                         TextField.value = Text[NumberOfRows.value - 1];
                         EntryField.value = "";
+                        
+                        if(NumberOfRows.value > Text.length){
+                            EntryField.style.backgroundColor = "yellow";                    
+                        }else{
+                            EntryField.style.backgroundColor = "transparent";
+                        }
                     }
                 }
                 //Проверить окончание строки
@@ -1204,6 +1214,11 @@
                     }
                 }
                 //Обновить клавиатуру
+                if(NumberOfRows.value > Text.length){
+                    EntryField.style.backgroundColor = "yellow";                    
+                }else{
+                    EntryField.style.backgroundColor = "transparent";
+                }
             }
 
             function Armchange() {
