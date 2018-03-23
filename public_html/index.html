@@ -822,10 +822,18 @@
                         TextField.value = Text[NumberOfRows.value - 1];
                         EntryField.value = "";
                         
-                        if(NumberOfRows.value > Text.length){
+                        if(NumberOfRows.value == Text.length){
                             EntryField.style.backgroundColor = "yellow";                    
                         }else{
                             EntryField.style.backgroundColor = "transparent";
+                        }
+                        
+                        if(NumberOfRows.value > Text.length){
+                            TextField.value = '➧' + Text[0];
+                            EntryField.value = "";
+                            EntryField.focus();
+                            NumberOfRows.value = 1;
+                            Progressbar.value = 1;
                         }
                     }
                 }
@@ -1275,7 +1283,7 @@
                 TextLayout = document.getElementById("TextLayout");
                 Arm = document.getElementById("Arm");
                 FontSize = document.getElementById("FontSize");
-                UseAssistant = document.getElementById("UseAssistant");
+                UseAssistant = document.getElementById("UseAssistant");                
                 Filetxt = document.getElementById("Filetxt");
                 Speed = document.getElementById("Speed");
                 CharactersPerMinute = document.getElementById("CharactersPerMinute");
@@ -1308,6 +1316,7 @@
                     NumberOfRows.value = localStorage.getItem("NumberOfRows");
                     Text = JSON.parse(localStorage.getItem("Text"));
                     UseAssistant.checked = localStorage.getItem("UseAssistant") === "true" ? true : false;
+                    UseTranslator.checked = localStorage.getItem("UseTranslator") === "true" ? true : false;
                     Record.value = localStorage.getItem("Record");
                     StatisticsSetForPeriod = JSON.parse(localStorage.getItem("DayRecord"));
                     try {
@@ -1357,6 +1366,7 @@
                 localStorage.setItem("NumberOfRows", NumberOfRows.value);
                 localStorage.setItem("Text", JSON.stringify(Text));
                 localStorage.setItem("UseAssistant", UseAssistant.checked);
+                localStorage.setItem("UseTranslator", UseTranslator.checked);                
                 localStorage.setItem("Record", Record.value);
                 localStorage.setItem("DayRecord", JSON.stringify(StatisticsSetForPeriod));
                 localStorage.setItem("Filetxtvalue", Filetxt.value);
