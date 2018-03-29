@@ -1310,6 +1310,7 @@
 
 
                 //Востановление значений
+                Arm.value = 'both';
                 if (localStorage.getItem("UseAssistant") !== null) {
                     Arm.value = localStorage.getItem("Arm");
                     FontSize.value = localStorage.getItem("FontSize");
@@ -1347,7 +1348,7 @@
                         UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase(), ArrayOfAdditionalCharactersLeftHand.indexOf(Symbol) !== -1); //toLowerCase()
                     } else {
                         UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase()); //toLowerCase()
-                    }
+                    }                    
                 }
                 //Обновить клавиатуру
                 LoadingIndicator.hidden = true;
@@ -1406,11 +1407,11 @@
             </table>                    
 
             Строка:<input id="NumberOfRows" type="number" value= 1 min= 1 placeholder="Номер строки" style="width: 65px;">        
-            Рука:<input id="Arm" list="hand" placeholder="Правая" style="width: 65px;" onclick="value = '';">
+            Рука:<input id="Arm" list="hand" placeholder="Обе" style="width: 65px;" onclick="value = '';">
             <datalist id="hand">
-                <option value="right" label="Правая">
-                <option value="left" label="Левая">
                 <option value="both" label="Обе">
+                <option value="right" label="Правая">
+                <option value="left" label="Левая">                
             </datalist>                
             Шрифт:<input id="FontSize" type="number" value= 50 min= 11 max=99 placeholder="Размер шрифта" style="width: 30px;">             
             <input id="UseAssistant" type="checkbox" checked>Помощник.
