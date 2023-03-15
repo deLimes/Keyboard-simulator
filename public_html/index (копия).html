@@ -6,14 +6,12 @@
     <head>
         <meta charset="utf-8">
         <title>Клавиатурный тренажер</title>                     
-        
+
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>        
         <script type="text/javascript">
             google.charts.load('current', {'packages': ['corechart']});
             //google.charts.setOnLoadCallback(drawChart);
         </script>       
-        <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.3.js"></script>
-        		
 
         <script>
 
@@ -1247,8 +1245,7 @@
 
             function FontSizechange(event) {
                 TextField.style.fontSize = FontSize.value + 'px';
-                EntryField.style.fontSize = FontSize.value + 'px';//'%';  
-                block.style.fontSize = FontSize.value + 'px';                                                  
+                EntryField.style.fontSize = FontSize.value + 'px';//'%';                                                    
                 Mark = Math.floor((50 + (50 - FontSize.value)) / (50 / 15) * (50 / FontSize.value));
             }
 
@@ -1381,73 +1378,6 @@
             }
 
         </script>
-        		
-		<script>
-            function speak(text) {
-                    const message = new SpeechSynthesisUtterance();
-                    message.lang = "ru-RU";
-                    message.text = text;
-                    window.speechSynthesis.speak(message);
-                };
-        </script>
-        <script>
-            
-            function speech() {
-                const message = new SpeechSynthesisUtterance();
-                message.lang = "ru-RU";
-                message.text = 'Какой-то текст';
-                window.speechSynthesis.speak(message);
-
-                //let browserType = 'mozilla';
-            //var str = 'абвгдеёжзи';
-            
-            //var block = document.getElementById("block");
-            //block.innerText = <span class="colortext">str.substr(1, 2)</span>
-            //block.innerText = '<span>'+str.substr(1, 2)+'</span>';
-            //$('#demo').append('<span>'+$('textbox').val()+'</span>');
-            //$('#block').append('<span class="colortext">'+'<br>'+str.substr(1,3 )+'</span>');
-            var original = 'абвгдеёжзи';
-            var answer   = 'алвгдеёкзи';
-            var comparison = original +' '+answer;
-            //setText(comparison);
-
-            var str = '';
-            for (var i = 0; i < comparison.length; i++) {
-                if (i <= original.length){
-                    if (i == 2){
-                        str.append('<span class="greycolortext">'+comparison.substr(i,1)+'</span>');
-                    }
-                    str.append('<span class="bluecolortext">'+comparison.substr(i,1)+'</span>');
-                }else{
-                    if (i == original.length+1){
-                        str.append('<br>');
-                    }
-                    str.append('<span class="redcolortext">'+comparison.substr(i,1)+'</span>');
-                }
-
-            }
-            
-            var size = 6;
-            spanResultСomparison.innerHTML = "<font color=\"#001aff\" size=\"50\"" + comparison +"</font>";
-            //exit_str;
-            
-
-                    
-                    ////////////////////////
-                    //////////////////////////
-                    //var str = "Hello World";
-                    //str = str.replaceAt(5, '_');
-
-                    
-
-                    //block.textContent = block.textContent.replaceAt(2, '<span class="greycolortext">' + comparison.substr(2, 1) + '</span>');
-                    //$('#block').replaceWith("<span>Заменили</span>");              
-
-                };
-                  
-            
-                   </script>
-        
     </head>
 
     <body onload= init() onunload = fin()>
@@ -1460,13 +1390,6 @@
             <br><br>                     
             <input id="TextField" size="30" style="font-size: 50px; width: 800px;"><br>
             <input id="EntryField" size="30" style="font-size: 50px; width: 800px;" onselect= TranslateText()><br><!-- -->    
-            <textarea id="editor" rows="2" cols="45" name="text">
-                текст
-            </textarea>
-            
-            <!--<div id="blockСomparison" class="comparison" style="font-size: 50px; width: 800px;">-->
-            <span id="spanResultСomparison"></span>
-        
             <input id="LoadingIndicator" type=image src = "Keyboard/12205100050348185.gif" width=30 height=30 alt="Loading indicator">
             <input id="ErrorLoading" type=image src = "Keyboard/error loading.png" width=334 height=83 alt="Loading indicator">
             <input Id="Filetxt" onchange= OpenFile() type="file" accept=".txt">        
@@ -1496,9 +1419,6 @@
             Раскладка:<span id="TextLayout"></span><br>
             <input id="Translation" size="30" style="font-size: 25px; width: 800px;">           
         </div>
-
-
-
 
     </body>
 </html>

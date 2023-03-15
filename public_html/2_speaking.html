@@ -1,0 +1,102 @@
+<html>
+
+<head>
+    <title>
+        Speaking
+    </title>
+    <script>
+
+        //if ('speechSynthesis' in window) {
+
+
+
+        function onClickPlay() {
+            if (!speachIsStopping) {
+
+                speachIsStopping = true;
+                utterance = new SpeechSynthesisUtterance();
+                utterance.text = textToSpeach.value;
+                utterance.lang = "en-US";
+                utterance.lang = "ru-RU";
+                utterance.voice = synth.getVoices()[107];
+                utterance.onend = function () {
+                    speachIsStopping = false;
+                };
+                synth.speak(utterance);
+                screen.innerText = "play";
+            }
+            /*
+            if (synth.paused) { 
+                synth.resume();
+                screen.innerText = "resume";
+            }
+            */
+        }
+        function onClickPause() {
+            if (synth.speaking && !synth.paused) { /* pause narration */
+                screen.innerText = "pause";
+                synth.pause();
+            }
+        }
+        function onClickResume() {
+            synth.resume();
+        }
+        function onClickStop() {
+            if (synth.speaking) { /* stop narration */
+                /* for safari */
+                speachIsStopping = false;
+                screen.innerText = "stop";
+                synth.cancel();
+            }
+        }
+        //}
+
+        
+
+
+        function go() {
+            //const option = document.createElement("option");
+
+            //i = 1;
+        }
+
+        function init() {
+
+            synth = speechSynthesis;
+            speachIsStopping = false;
+            screen = document.getElementById("screen");
+            textToSpeach = document.getElementById("entryField");
+            //
+            voiceSelect = document.getElementById("voiceSelect");
+            populateVoiceList();
+            if (
+                typeof speechSynthesis !== "undefined" &&
+                speechSynthesis.onvoiceschanged !== undefined
+            ) {
+                speechSynthesis.onvoiceschanged = populateVoiceList;
+            }
+
+            //
+        }
+    </script>
+</head>
+
+<body onload=init()>
+
+    <input id="entryField" type="text">
+
+    <input value="play" onclick=onClickPlay() type="button">
+    <input value="pause" onclick=onClickPause() type="button">
+    <!--
+    <button id="pause" onclick="onClickPause()">pause2</button>
+    -->
+    <input value="stop" onclick=onClickStop() type="button">
+    <input value="resume" onclick=onClickResume() type="button">
+    <!--<input value="Нажми меня!" onclick=go() type="button">-->
+    <div id="screen"></div>
+
+
+
+</body>
+
+</html>
