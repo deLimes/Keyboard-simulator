@@ -39,6 +39,7 @@
             var openedWindow = "about:blank";
             var errorSymbol = false;
             var CharactersPerMin = 0;
+            const audioPechatat = new Audio('Keyboard/pechatat.mp3');
 
             var i;
 
@@ -1096,6 +1097,13 @@
                     } else {
                         EntryField.value = EntryField.value + Symbol.toLowerCase();
                     }
+                    /*
+                    if (!audioPechatat.ended) {
+                        audioPechatat.stop(); 
+                    }
+                    */
+                    audioPechatat.currentTime = 0;
+                    audioPechatat.play();
                     CharactersPerMin++;
                     CharactersPerMinute.value = CharactersPerMin;
                     
