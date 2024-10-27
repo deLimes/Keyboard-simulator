@@ -1,0 +1,141 @@
+<html>
+
+<head>
+    <title>
+        Comparison
+    </title>
+    <script>
+        class StateMap {
+
+            constructor(unit, indexX, indexY) {
+                this.unit = unit;
+                this.indexX = indexX;
+                this.indexY = indexY;
+            }
+        }
+
+        function createStateMap(original, answer) {
+
+            x = original.split('');
+            y = answer.split('');
+
+            m = x.length;
+            n = y.length;
+
+            //int[][] len = new int[m + 1][n + 1];
+
+/*
+            var len = new Array(m);            // создаем пустой массив длины `M`
+            for (var i = 0; i < m; i++) {
+                len[i] = new Array(n);        // делаем каждый элемент массивом
+            }
+*/
+            var len = [];
+            for (var i = 0; i <= m; i++) {
+                len[i] = [];
+                for (var j = 0; j <= n; j++) {
+                    len[i][j] = 0;   
+                }
+            }
+
+            for (var i = 0; i < m; i++) {
+                for (var j = 0; j < n; j++) {
+                    if (x[i] == y[j]) {
+                        len[i + 1][j + 1] = len[i][j] + 1;
+                    } else {
+                        len[i + 1][j + 1] = Math.max(len[i + 1][j], len[i][j + 1]);
+                    }
+                }
+            }
+            var cnt = len[m][n];
+            var res = new Array(cnt);
+            for (var i = m - 1, j = n - 1; i >= 0 && j >= 0;) {
+                if (x[i] == y[j]) {
+                    res[--cnt] = new StateMap(x[i], i, j);
+                    --i;
+                    --j;
+                } else if (len[i + 1][j] > len[i][j + 1]) {
+                    --j;
+                } else {
+                    --i;
+                }
+            }
+
+            return res;
+        }
+        function colorize() {
+
+            original = document.getElementById("original").value;
+            answer = document.getElementById("entryField").value;
+
+            //document.getElementById("result").innerHTML = original + "<br>" + answer;                
+            var comparison = original;
+            if (answer != "") {
+                comparison = original + "\n" + answer;
+            }
+
+            text = comparison.split('');
+
+            var result = "";
+
+            for (var i = 0; i < comparison.length; i++) {
+                if (i <= original.length) {
+                    // ForegroundColorSpan style = new ForegroundColorSpan(Color.BLUE);
+                    // text.setSpan(style, i, i + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    result = result + "<font color = #0000FF>" + text[i] + "</font>"+"%%C";
+                    if (i == original.length) {
+                        result = result + "<br>";
+                    }
+                } else {
+                    //   ForegroundColorSpan style = new ForegroundColorSpan(Color.RED);
+                    // text.setSpan(style, i, i + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                    result = result + "<font color = #FF0000>" + text[i] + "</font>"+"%%C";
+                }
+
+            }
+
+            text = result.split("%%C");
+            var stateMap = createStateMap(original, answer);
+
+            var s = 0;
+            for (var i = 0; i < comparison.length; i++) {
+                if (i <= original.length) {
+                    for (var j = 0; j < stateMap.length; j++) {
+                        if (stateMap[j].unit == comparison.at(i) && stateMap[j].indexX == i) {
+                            //ForegroundColorSpan style = new ForegroundColorSpan(Color.GRAY);
+                            //text.setSpan(style, i, i + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                            text[i] = text[i].replace("#0000FF", "#808080");
+                            break;
+                        }
+                    }
+                } else {
+                    for (var j = 0; j < stateMap.length; j++) {
+                        if (stateMap[j].unit == comparison.at(i) && stateMap[j].indexY == s) {
+                            //ForegroundColorSpan style = new ForegroundColorSpan(Color.rgb(0, 128, 0));
+                            //text.setSpan(style, i, i + 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                            text[i] = text[i].replace("#FF0000", "#00FF00");
+                            break;
+                        }
+                    }
+                    s++;
+                }
+
+            }
+
+            result = text.join('');
+            document.getElementById("result").innerHTML = result;
+        }
+    </script>
+</head>
+
+<body>
+
+    <input id="original" type="text">
+    <input id="entryField" type="text">
+    <input value="Нажми меня" onclick=colorize() type="button">
+
+    <p id="result"></p>
+
+</body>
+
+</html>

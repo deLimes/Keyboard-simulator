@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<!--
+-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Клавиатурный тренажер</title>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        //google.charts.setOnLoadCallback(drawChart);
+    </script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.3.js"></script>
+
+
+    <script>
+
+        var Text = ['undefined'];
+        var MatchingKeys = [];
+        var СlampedGap = false;
+        var AltClamped = false;
+        var Space = false;
+        var UseShift = false;
+        var UseCtrl = false;
+        var NumberSymbol = 0;
+        var PointerPosition = 0;
+        var DeleteCharacter = false;
+        var EnglishTextLayout = false;
+        var Mark = 15;//При размере шрифта 50px
+        var StartTime = null;
+        var ArrayOfStringLength = [];
+        var ArrayOfStringsLength = [];
+        var MinuteSet = 0;
+        var KeyboardFolded = false;
+        var ErrorsPerMinute = 0;
+        var mText = '';
+        var openedWindow = "about:blank";
+        var errorSymbol = false;
+        var CharactersPerMin = 0;
+        const audioPechatat = new Audio('Keyboard/pechatat.mp3');
+        const audioPechatatBackspace = new Audio('Keyboard/pechatatBackspace.mp3');
+        const audioPechatatEnter = new Audio('Keyboard/pechatatEnter.mp3');
+        const audioPechatatError = new Audio('Keyboard/pechatatError.mp3');
+        const audioMusicBackground1 = new Audio('Keyboard/musicBackground1.mp3');
+        const audioMusicBackground2 = new Audio('Keyboard/musicBackground2.mp3');
+        var i;
+
+        for (i = 0; i < 300; i++) {
+            MatchingKeys.push(0);
+            if (i === 72) {
+                MatchingKeys[i] = 71;
+            }
+            if (i === 74) {
+                MatchingKeys[i] = 70;
+            }
+            if (i === 75) {
+                MatchingKeys[i] = 68;
+            }
+            if (i === 76) {
+                MatchingKeys[i] = 83;
+            }
+            if (i === 186) {
+                MatchingKeys[i] = 65;
+            }
+            if (i === 89) {
+                MatchingKeys[i] = 84;
+            }
+            if (i === 85) {
+                MatchingKeys[i] = 82;
+            }
+            if (i === 73) {
+                MatchingKeys[i] = 69;
+            }
+            if (i === 79) {
+                MatchingKeys[i] = 87;
+            }
+            if (i === 80) {
+                MatchingKeys[i] = 81;
+            }
+            if (i === 219) {
+                MatchingKeys[i] = 219;
+            }
+            if (i === 221) {
+                MatchingKeys[i] = 221;
+            }
+            if (i === 78) {
+                MatchingKeys[i] = 66;
+            }
+            if (i === 77) {
+                MatchingKeys[i] = 86;
+            }
+            if (i === 188) {
+                MatchingKeys[i] = 67;
+            }
+            if (i === 190) {
+                MatchingKeys[i] = 88;
+            }
+            if (i === 191) {
+                MatchingKeys[i] = 90;
+            }
+            if (i === 54) {
+                MatchingKeys[i] = 53;
+            }
+            if (i === 55) {
+                MatchingKeys[i] = 52;
+            }
+            if (i === 56) {
+                MatchingKeys[i] = 51;
+            }
+            if (i === 57) {
+                MatchingKeys[i] = 50;
+            }
+            if (i === 48) {
+                MatchingKeys[i] = 49;
+            }
+            if (i === 189) {
+                MatchingKeys[i] = 192;
+            }
+            if (i === 222) {
+                MatchingKeys[i] = 222;
+            }
+            if (i === 8) {
+                MatchingKeys[i] = 9;
+            }
+            if (i === 187) {
+                MatchingKeys[i] = 187;
+            }
+            if (i === 220) {
+                MatchingKeys[i] = 220;
+            }
+
+
+            //left hand
+            if (i === 71) {
+                MatchingKeys[i] = 72;
+            }
+            if (i === 70) {
+                MatchingKeys[i] = 74;
+            }
+            if (i === 68) {
+                MatchingKeys[i] = 75;
+            }
+            if (i === 83) {
+                MatchingKeys[i] = 76;
+            }
+            if (i === 65) {
+                MatchingKeys[i] = 186;
+            }
+            if (i === 84) {
+                MatchingKeys[i] = 89;
+            }
+            if (i === 82) {
+                MatchingKeys[i] = 85;
+            }
+            if (i === 69) {
+                MatchingKeys[i] = 73;
+            }
+            if (i === 87) {
+                MatchingKeys[i] = 79;
+            }
+            if (i === 81) {
+                MatchingKeys[i] = 80;
+            }
+            if (i === 9) {
+                MatchingKeys[i] = 8;
+            }
+            if (i === 66) {
+                MatchingKeys[i] = 78;
+            }
+            if (i === 86) {
+                MatchingKeys[i] = 77;
+            }
+            if (i === 67) {
+                MatchingKeys[i] = 188;
+            }
+            if (i === 88) {
+                MatchingKeys[i] = 190;
+            }
+            if (i === 90) {
+                MatchingKeys[i] = 191;
+            }
+            if (i === 53) {
+                MatchingKeys[i] = 54;
+            }
+            if (i === 52) {
+                MatchingKeys[i] = 55;
+            }
+            if (i === 51) {
+                MatchingKeys[i] = 56;
+            }
+            if (i === 50) {
+                MatchingKeys[i] = 57;
+            }
+            if (i === 49) {
+                MatchingKeys[i] = 48;
+            }
+            if (i === 192) {
+                MatchingKeys[i] = 189;
+            }
+            if (i === 20) {
+                MatchingKeys[i] = 222;
+            }
+        }
+        ;
+        var ComplianceWithRussianSymbols = {};
+        for (i = 0; i < 300; i++) {
+            ComplianceWithRussianSymbols['one'] = false;
+            if (i === 72) {
+                ComplianceWithRussianSymbols[i] = 1088;
+            }
+            if (i === 74) {
+                ComplianceWithRussianSymbols[i] = 1086;
+            }
+            if (i === 75) {
+                ComplianceWithRussianSymbols[i] = 1083;
+            }
+            if (i === 76) {
+                ComplianceWithRussianSymbols[i] = 1076;
+            }
+            if (i === 186) {
+                ComplianceWithRussianSymbols[i] = 1078;
+            }
+            if (i === 89) {
+                ComplianceWithRussianSymbols[i] = 1085;
+            }
+            if (i === 85) {
+                ComplianceWithRussianSymbols[i] = 1075;
+            }
+            if (i === 73) {
+                ComplianceWithRussianSymbols[i] = 1096;
+            }
+            if (i === 79) {
+                ComplianceWithRussianSymbols[i] = 1097;
+            }
+            if (i === 80) {
+                ComplianceWithRussianSymbols[i] = 1079;
+            }
+            if (i === 219) {
+                ComplianceWithRussianSymbols[i] = 1093;
+            }
+            if (i === 221) {
+                ComplianceWithRussianSymbols[i] = 1098;
+            }
+            if (i === 78) {
+                ComplianceWithRussianSymbols[i] = 1090;
+            }
+            if (i === 77) {
+                ComplianceWithRussianSymbols[i] = 1100;
+            }
+            if (i === 188) {
+                ComplianceWithRussianSymbols[i] = 1073;
+            }
+            if (i === 190) {
+                ComplianceWithRussianSymbols[i] = 1102;
+            }
+            if (i === 191) {
+                ComplianceWithRussianSymbols[i] = 46;
+            }
+            if (i === 54) {
+                ComplianceWithRussianSymbols[i] = 54;
+            }
+            if (i === 55) {
+                ComplianceWithRussianSymbols[i] = 55;
+            }
+            if (i === 56) {
+                ComplianceWithRussianSymbols[i] = 56;
+            }
+            if (i === 57) {
+                ComplianceWithRussianSymbols[i] = 57;
+            }
+            if (i === 48) {
+                ComplianceWithRussianSymbols[i] = 48;
+            }
+            if (i === 189) {
+                ComplianceWithRussianSymbols[i] = 45;
+            }
+            if (i === 222) {
+                ComplianceWithRussianSymbols[i] = 1101;
+            }
+            if (i === 187) {
+                ComplianceWithRussianSymbols[i] = 61;
+            }
+            if (i === 220) {
+                ComplianceWithRussianSymbols[i] = 92;
+            }
+
+
+            //left hand
+            if (i === 71) {
+                ComplianceWithRussianSymbols[i] = 1087;
+            }
+            if (i === 70) {
+                ComplianceWithRussianSymbols[i] = 1072;
+            }
+            if (i === 68) {
+                ComplianceWithRussianSymbols[i] = 1074;
+            }
+            if (i === 83) {
+                ComplianceWithRussianSymbols[i] = 1099;
+            }
+            if (i === 65) {
+                ComplianceWithRussianSymbols[i] = 1092;
+            }
+            if (i === 84) {
+                ComplianceWithRussianSymbols[i] = 1077;
+            }
+            if (i === 82) {
+                ComplianceWithRussianSymbols[i] = 1082;
+            }
+            if (i === 69) {
+                ComplianceWithRussianSymbols[i] = 1091;
+            }
+            if (i === 87) {
+                ComplianceWithRussianSymbols[i] = 1094;
+            }
+            if (i === 81) {
+                ComplianceWithRussianSymbols[i] = 1081;
+            }
+            if (i === 66) {
+                ComplianceWithRussianSymbols[i] = 1080;
+            }
+            if (i === 86) {
+                ComplianceWithRussianSymbols[i] = 1084;
+            }
+            if (i === 67) {
+                ComplianceWithRussianSymbols[i] = 1089;
+            }
+            if (i === 88) {
+                ComplianceWithRussianSymbols[i] = 1095;
+            }
+            if (i === 90) {
+                ComplianceWithRussianSymbols[i] = 1103;
+            }
+            if (i === 53) {
+                ComplianceWithRussianSymbols[i] = 53;
+            }
+            if (i === 52) {
+                ComplianceWithRussianSymbols[i] = 52;
+            }
+            if (i === 51) {
+                ComplianceWithRussianSymbols[i] = 51;
+            }
+            if (i === 50) {
+                ComplianceWithRussianSymbols[i] = 50;
+            }
+            if (i === 49) {
+                ComplianceWithRussianSymbols[i] = 49;
+            }
+            if (i === 192) {
+                ComplianceWithRussianSymbols[i] = 1105;
+            }
+        }
+        ;
+
+        var AnArrayOfServiceIndicators = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\\', '.'];
+
+        var ComplianceWithKeyCharacters = {
+            [""]: { "value": "Клавиатура", "hand": "right" },
+            ["Shift"]: { "value": "КлавишаShift", "hand": "right" },
+            [" "]: { "value": "КлавиатураПробел", "hand": "right" },
+            ["р"]: { "value": "Клавиша_Р", "hand": "right" },
+            ["о"]: { "value": "Клавиша_О", "hand": "right" },
+            ["л"]: { "value": "Клавиша_Л", "hand": "right" },
+            ["д"]: { "value": "Клавиша_Д", "hand": "right" },
+            ["ж"]: { "value": "Клавиша_Ж", "hand": "right" },
+            ["э"]: { "value": "Клавиша_Э", "hand": "right" },
+            ["н"]: { "value": "Клавиша_Н", "hand": "right" },
+            ["г"]: { "value": "Клавиша_Г", "hand": "right" },
+            ["ш"]: { "value": "Клавиша_Ш", "hand": "right" },
+            ["щ"]: { "value": "Клавиша_Щ", "hand": "right" },
+            ["з"]: { "value": "Клавиша_З", "hand": "right" },
+            ["х"]: { "value": "Клавиша_Х", "hand": "right" },
+            ["ъ"]: { "value": "Клавиша_Ъ", "hand": "right" },
+            ["т"]: { "value": "Клавиша_Т", "hand": "right" },
+            ["ь"]: { "value": "Клавиша_Ь", "hand": "right" },
+            ["б"]: { "value": "Клавиша_Б", "hand": "right" },
+            ["ю"]: { "value": "Клавиша_Ю", "hand": "right" },
+            ["."]: { "value": "Клавиша_Точка", "hand": "right" },
+            ["6"]: { "value": "Клавиша_6", "hand": "right" },
+            ["7"]: { "value": "Клавиша_7", "hand": "right" },
+            ["8"]: { "value": "Клавиша_8", "hand": "right" },
+            ["9"]: { "value": "Клавиша_9", "hand": "right" },
+            ["0"]: { "value": "Клавиша_0", "hand": "right" },
+            ["-"]: { "value": "Клавиша_Тире", "hand": "right" },
+            ["="]: { "value": "Клавиша_Плюс", "hand": "right" },
+            ["\\"]: { "value": "Клавиша_Слеш", "hand": "right" },
+            //Левая рука
+            ["п"]: { "value": "Клавиша_П", "hand": "left" },
+            ["а"]: { "value": "Клавиша_А", "hand": "left" },
+            ["в"]: { "value": "Клавиша_В", "hand": "left" },
+            ["ы"]: { "value": "Клавиша_Ы", "hand": "left" },
+            ["ф"]: { "value": "Клавиша_Ф", "hand": "left" },
+            ["и"]: { "value": "Клавиша_И", "hand": "left" },
+            ["м"]: { "value": "Клавиша_М", "hand": "left" },
+            ["с"]: { "value": "Клавиша_С", "hand": "left" },
+            ["ч"]: { "value": "Клавиша_Ч", "hand": "left" },
+            ["я"]: { "value": "Клавиша_Я", "hand": "left" },
+            ["е"]: { "value": "Клавиша_Е", "hand": "left" },
+            ["к"]: { "value": "Клавиша_К", "hand": "left" },
+            ["у"]: { "value": "Клавиша_У", "hand": "left" },
+            ["ц"]: { "value": "Клавиша_Ц", "hand": "left" },
+            ["й"]: { "value": "Клавиша_Й", "hand": "left" },
+            ["5"]: { "value": "Клавиша_5", "hand": "left" },
+            ["4"]: { "value": "Клавиша_4", "hand": "left" },
+            ["3"]: { "value": "Клавиша_3", "hand": "left" },
+            ["2"]: { "value": "Клавиша_2", "hand": "left" },
+            ["1"]: { "value": "Клавиша_1", "hand": "left" },
+            ["ё"]: { "value": "Клавиша_Ё", "hand": "left" },
+            //англ. раскладка
+            ["h"]: { "value": "Клавиша_Р", "hand": "right" },
+            ["j"]: { "value": "Клавиша_О", "hand": "right" },
+            ["k"]: { "value": "Клавиша_Л", "hand": "right" },
+            ["l"]: { "value": "Клавиша_Д", "hand": "right" },
+            ["y"]: { "value": "Клавиша_Н", "hand": "right" },
+            ["u"]: { "value": "Клавиша_Г", "hand": "right" },
+            ["i"]: { "value": "Клавиша_Ш", "hand": "right" },
+            ["o"]: { "value": "Клавиша_Щ", "hand": "right" },
+            ["p"]: { "value": "Клавиша_З", "hand": "right" },
+            ["["]: { "value": "Клавиша_Х", "hand": "right" },
+            ["]"]: { "value": "Клавиша_Ъ", "hand": "right" },
+            ["n"]: { "value": "Клавиша_Т", "hand": "right" },
+            ["m"]: { "value": "Клавиша_Ь", "hand": "right" },
+
+            //Левая рука
+            ["g"]: { "value": "Клавиша_П", "hand": "left" },
+            ["f"]: { "value": "Клавиша_А", "hand": "left" },
+            ["d"]: { "value": "Клавиша_В", "hand": "left" },
+            ["s"]: { "value": "Клавиша_Ы", "hand": "left" },
+            ["a"]: { "value": "Клавиша_Ф", "hand": "left" },
+            ["b"]: { "value": "Клавиша_И", "hand": "left" },
+            ["v"]: { "value": "Клавиша_М", "hand": "left" },
+            ["c"]: { "value": "Клавиша_С", "hand": "left" },
+            ["x"]: { "value": "Клавиша_Ч", "hand": "left" },
+            ["z"]: { "value": "Клавиша_Я", "hand": "left" },
+            ["t"]: { "value": "Клавиша_Е", "hand": "left" },
+            ["r"]: { "value": "Клавиша_К", "hand": "left" },
+            ["e"]: { "value": "Клавиша_У", "hand": "left" },
+            ["w"]: { "value": "Клавиша_Ц", "hand": "left" },
+            ["q"]: { "value": "Клавиша_Й", "hand": "left" },
+            ["`"]: { "value": "Клавиша_Ё", "hand": "left" },
+            //
+
+            ["!"]: { "value": "Клавиша_1", "hand": "left" },
+            ["\""]: { "value": "Клавиша_2", "hand": "left" },
+            ["№"]: { "value": "Клавиша_3", "hand": "left" },
+            [";"]: { "value": "Клавиша_4", "hand": "left" },
+            ["%"]: { "value": "Клавиша_5", "hand": "left" },
+            [":"]: { "value": "Клавиша_6", "hand": "right" },
+            ["?"]: { "value": "Клавиша_7", "hand": "right" },
+            ["*"]: { "value": "Клавиша_8", "hand": "right" },
+            ["("]: { "value": "Клавиша_9", "hand": "right" },
+            [")"]: { "value": "Клавиша_0", "hand": "right" },
+            ["_"]: { "value": "Клавиша_Тире", "hand": "right" },
+            ["+"]: { "value": "Клавиша_Плюс", "hand": "right" },
+            ["/"]: { "value": "Клавиша_Слеш", "hand": "right" },
+            ["¶"]: { "value": "Клавиша_Enter", "hand": "right" },
+            ["Ctrl"]: { "value": "Клавиша_Ctrl", "hand": "right" },
+            ["	"]: { "value": "Клавиша_Таб", "hand": "left" },
+            [","]: { "value": "Клавиша_Точка", "hand": "right" }
+
+        };
+
+        var ArrayEnglishCharacters = ["h", "j", "k", "l", "y", "u", "i", "o", "p", "[", "]", "n", "m",
+            "g", "f", "d", "s", "a", "b", "v", "c", "x", "z", "t", "r", "e", "w", "q", "`"];
+
+        var ArrayRussianCharacters = ["р", "о", "л", "д", "ж", "э", "н", "г", "ш", "щ", "з", "х", "ъ", "т", "ь", "б", "ю",
+            "п", "а", "в", "ы", "ф", "и", "м", "с", "ч", "я", "е", "к", "у", "ц", "й", "ё"];
+
+        var ArrayOfAdditionalCharactersLeftHand = ["х", "ъ", "+", "=", "\\", "/", "[", "]"];
+
+        var ArrayOfAdditionalCharactersLeftHand2 = ["	", "ё", "1", "2"];
+
+        var ConformityAdditionalCharactersLeftHand = {
+            ["	"]: "х",
+            ["ё"]: "ъ",
+            ["1"]: "=",
+            ["2"]: "\\"
+        };
+
+        var ArrayOfServiceIndicators = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "\\", "."];
+
+        var ArrayOfServiceIndicatorsEn = ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "\\", "/", ".", ",", ";", "'", "+"];
+
+        var MatchingServiceDigits = {
+            ["1"]: "!",
+            ["2"]: "\"",
+            ["3"]: "№",
+            ["4"]: ";",
+            ["5"]: "%",
+            ["6"]: ":",
+            ["7"]: "?",
+            ["8"]: "*",
+            ["9"]: "(",
+            ["0"]: ")",
+            ["-"]: "_",
+            ["="]: "+",
+            ["\\"]: "/",
+            ["."]: ","
+        };
+        var MatchingServiceDigitsEn = {
+            ["`"]: "~",
+            ["1"]: "!",
+            ["2"]: "@",
+            ["3"]: "#",
+            ["4"]: "$",
+            ["5"]: "%",
+            ["6"]: "^",
+            ["7"]: "&",
+            ["8"]: "*",
+            ["9"]: "(",
+            ["0"]: ")",
+            ["-"]: "_",
+            ["="]: "+",
+            ["\\"]: "|",
+            ["/"]: "?",
+            ["."]: ">",
+            [","]: "<",
+            [";"]: ":",
+            ["'"]: "\"",
+            ["+"]: "+"
+        };
+
+        //['Минута', 'Скорость', 'Ошибки', 'Рекорд']
+        var StatisticsSet = [];
+
+        //['Дата', 'Скорость', 'Ошибки']
+        var StatisticsSetForPeriod = [];
+        /*
+         СтатистикаНабораЗаПериод.Колонки.Добавить("Дата");
+         СтатистикаНабораЗаПериод.Колонки.Добавить("СимволовЗаМнуту");
+         СтатистикаНабораЗаПериод.Колонки.Добавить("ОшибокЗаМнуту");
+         */
+
+        function UpdateKeyboard(Symbol, Shift, Ctrl, ShowShift, CancelCtrl) {
+
+            Shift = Shift || false;
+            Ctrl = Ctrl || false;
+            ShowShift = ShowShift || false;
+            CancelCtrl = CancelCtrl || false;
+
+
+            if (EnglishTextLayout) {
+                if (Symbol === ",") {
+                    Shift = false;
+                    Symbol = "б";
+                }
+                ;
+                if (Symbol === ".") {
+                    Shift = false;
+                    Symbol = "ю";
+                }
+                ;
+                if (Symbol === "/") {
+                    Ctrl = false;
+                    Shift = false;
+                    Symbol = ",";
+                }
+                ;
+                if (Symbol === ";") {
+                    Shift = false;
+                    Symbol = "ж";
+                }
+                ;
+                if (Symbol === "'") {
+                    Shift = false;
+                    Symbol = "э";
+                }
+                ;
+
+                if (Symbol === ":") {
+                    Shift = true;
+                    Symbol = "ж";
+                }
+                ;
+                if (Symbol === "~") {
+                    Shift = true;
+                    Symbol = "ё";
+                }
+                ;
+                if (Symbol === "@" && Shift === false) {
+                    Symbol = "2";
+                }
+                ;
+                if (Symbol === "#" && Shift === false) {
+                    Symbol = "3";
+                }
+                ;
+                if (Symbol === "$" && Shift === false) {
+                    Symbol = "4";
+                }
+                ;
+                if (Symbol === "^" && Shift === false) {
+                    Symbol = "6";
+                }
+                ;
+                if (Symbol === "&" && Shift === false) {
+                    Symbol = "7";
+                }
+                ;
+                if (Symbol === "\"") {
+                    Shift = true;
+                    Symbol = "э";
+                }
+                ;
+                if (Symbol === "|" && !CancelCtrl && Arm.value === "left") {
+                    Ctrl = true;
+                    Symbol = "\\";
+                }
+                ;
+                if (Symbol === "|" && Shift === false) {
+                    Symbol = "\\";
+                }
+                ;
+                if (Symbol === "<") {
+                    Shift = true;
+                    Symbol = "б";
+                }
+                ;
+                if (Symbol === ">") {
+                    Shift = true;
+                    Symbol = "ю";
+                }
+                ;
+                if (Symbol === "?" && Shift === false) {
+                    Symbol = ".";
+                }
+                ;
+            }
+            ;
+
+            if (Shift) {
+                if (UseShift || Symbol === "" || Symbol === " " || Symbol === "¶" || Symbol === "-" || Symbol === "	" || Symbol === "`"
+                    || (AnArrayOfServiceIndicators.indexOf(Symbol) !== -1)) {
+                    Symbol = Symbol.toLowerCase();
+                } else {
+                    Symbol = "Shift";
+                }
+            }
+            if (Ctrl) {
+                Symbol = "Ctrl";
+            }
+
+            if (ShowShift) {
+                Symbol = "Shift";
+            }
+
+            var Particle = (Arm.value === 'left') ? 'LH/' : 'RH/';
+            if (Arm.value === 'both') {
+                if (ComplianceWithKeyCharacters[Symbol].hand === "right") {
+                    Particle = 'RH/';
+                } else {
+                    Particle = 'LH/';
+                }
+            }
+
+            try {
+                var KeysPicture = "Keyboard/" + Particle + ComplianceWithKeyCharacters[Symbol].value + ".png";
+            } catch (e) {
+                var KeysPicture = "Keyboard/" + Particle + ComplianceWithKeyCharacters[""].value + ".png";
+            }
+            Keyboard.src = KeysPicture;
+        }
+
+        function OpenFile() {
+            LoadingIndicator.hidden = false;
+
+            var files = Filetxt.files;
+            var Filename = files[0].name;
+            var Type = files[0].type;
+            var Size = files[0].size + " bytes";
+
+            var Progressbar = document.getElementById("Progressbar");
+            var NumberOfRows = document.getElementById("NumberOfRows");
+            Progressbar.max = files[0].size;
+
+            var reader = new FileReader();
+            /*
+             var myWorker = new Worker("Keyboard/worker.js");
+             myWorker.onmessage = function (e) {
+             LoadingIndicator.hidden = true;
+             Text = e.data;
+             TextField.value = '➧' + Text[0];
+             EntryField.value = "";
+             EntryField.focus();
+             NumberOfRows.value = 1;
+             Progressbar.value = 1;
+             NumberOfRows.max = Text.length;
+             Progressbar.max = Text.length;
+             
+             //Обновить клавиатуру
+             if (UseAssistant.checked) {
+             var Symbol = TextField.value.substr(1, 1);
+             //alert(Symbol);
+             if (Arm.value === 'left') {
+             UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase(), ArrayOfAdditionalCharactersLeftHand.indexOf(Symbol) !== -1); //toLowerCase()
+             } else {
+             UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase()); //toLowerCase()
+             }
+             }
+             //Обновить клавиатуру
+             };
+             */
+            reader.onload = function (event) {
+                var contents = event.target.result;
+                //myWorker.postMessage([contents]);
+
+                //
+                Text = [];
+                var pos = -1;
+                var start = 0;
+                var end = contents.indexOf("\n", pos + 1);
+                var str = contents.substring(start, end - 1) + '¶';
+                Text.push(str);
+                while ((pos = end) !== -1) {
+                    start = end + 1;
+                    end = contents.indexOf("\n", start);
+                    if (end == -1) {
+                        str = contents.substring(start) + '¶';
+                    } else {
+                        str = contents.substring(start, end - 1) + '¶';
+                    }
+                    Text.push(str);
+                }
+                LoadingIndicator.hidden = true;
+
+                TextField.value = '➧' + Text[0];
+                EntryField.value = "";
+                EntryField.focus();
+                NumberOfRows.value = 1;
+                Progressbar.value = 1;
+                NumberOfRows.max = Text.length;
+                Progressbar.max = Text.length;
+
+                //Обновить клавиатуру
+                if (UseAssistant.checked) {
+                    var Symbol = TextField.value.substr(1, 1);
+                    //alert(Symbol);
+                    if (Arm.value === 'left') {
+                        UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase(), ArrayOfAdditionalCharactersLeftHand.indexOf(Symbol) !== -1); //toLowerCase()
+                    } else {
+                        UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase()); //toLowerCase()
+                    }
+                }
+                //Обновить клавиатуру
+                //
+            };
+            reader.onerror = function (event) {
+                alert("Файл не может быть прочитан! код " + event.target.error.code);
+            };
+            reader.readAsText(files[0]);
+        }
+
+        function EntryFieldkeydown(event) {
+
+            keyCode = event.keyCode;
+
+            if (!UseAssistant.checked) {
+                Keyboard.src = "Keyboard/RH/Клавиатура.png";
+            }
+
+            //Space
+            if (keyCode === 32) {
+                event.returnValue = false;
+                СlampedGap = true;
+                Space = true;
+                if (!UseAssistant.checked) {
+                    Keyboard.src = "Keyboard/RH/КлавиатураПробел.png";
+                }
+            }
+            //Space
+
+            //Alt
+            if (keyCode === 18) {
+                //event.preventDefault();
+                event.returnValue = false;
+                AltClamped = true;
+
+                EntryField.value = EntryField.value + TextField.value.substr(PointerPosition + 1, 1);
+                Keyboard.focus();
+            }
+            //Alt
+
+
+            //Shift
+            if (keyCode === 16) {
+                UseShift = !UseShift;
+                if (!UseAssistant.checked && UseShift) {
+                    if (event.location === 1) {
+                        Keyboard.src = "Keyboard/LH/КлавишаShift.png";
+                    } else {
+                        Keyboard.src = "Keyboard/RH/КлавишаShift.png";
+                    }
+                } else if (UseAssistant.checked || !UseShift) {
+                    var Symbol = TextField.value.substr(PointerPosition + 1, 1);
+                    UpdateKeyboard(Symbol.toLowerCase(), false, false, false, true);
+                }
+            }
+            //Shift                                                
+
+            //Ctrl
+            if (keyCode === 17 && event.location === 1) {
+                UseCtrl = !UseCtrl;
+                if (!UseAssistant.checked && UseCtrl) {
+                    Keyboard.src = "Keyboard/LH/Клавиша_Ctrl.png";
+                } else if (UseAssistant.checked || !UseCtrl) {
+                    var Symbol = TextField.value.substr(PointerPosition + 1, 1);
+                    UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase(), false, false, true);
+                }
+            }
+            //Ctrl
+
+            if (event.repeat && keyCode !== 8) {
+                event.returnValue = false;
+                Space = false;
+            }
+
+
+            if (keyCode === 8) {
+                CharactersPerMin <= 0 ? 0 : CharactersPerMin--;
+                CharactersPerMinute.value = CharactersPerMin;
+                audioPechatatBackspace.currentTime = 0;
+                audioPechatatBackspace.play();
+            }
+
+            //Проверить окончание строки
+            if (keyCode === 13 || keyCode === 20) {
+                audioPechatatEnter.currentTime = 0;
+                audioPechatatEnter.play();
+                //alert('13');                    
+                if (Text[NumberOfRows.value - 1].slice(0, -1) === EntryField.value) {
+
+
+                    var result = ArrayOfStringLength.reduce(function (sum, current) {
+                        return Number(sum) + Number(current);
+                    }, 0);
+
+                    ArrayOfStringsLength.push(EntryField.value.length - result);
+                    ArrayOfStringLength = [];
+
+                    NumberOfRows.value++;
+                    Progressbar.value = NumberOfRows.value;
+                    TextField.value = Text[NumberOfRows.value - 1];
+                    EntryField.value = "";
+
+                    if (NumberOfRows.value == Text.length) {
+                        EntryField.style.backgroundColor = "yellow";
+                    } else {
+                        EntryField.style.backgroundColor = "transparent";
+                    }
+
+                    if (NumberOfRows.value > Text.length) {
+                        TextField.value = '➧' + Text[0];
+                        EntryField.value = "";
+                        EntryField.focus();
+                        NumberOfRows.value = 1;
+                        Progressbar.value = 1;
+                    }
+                }
+            }
+            //Проверить окончание строки
+        }
+
+
+        function EntryFieldkeyup(event) {
+
+
+
+            if (!event.altKey) {
+                AltClamped = false;
+            }
+
+
+            if (event.keyCode === 32) {
+                СlampedGap = false;
+                if (Space === true) {
+                    EntryField.value = EntryField.value + ' ';
+                    //Keyboard.focus();
+                    EntryField.focus();
+                }
+                if (!UseAssistant.checked) {
+                    Keyboard.src = "Keyboard/RH/Клавиатура.png";
+                }
+            }
+            NumberSymbol = EntryField.value.length;
+
+            //Укоротить строку 
+
+            if (NumberSymbol > Math.min(15, Mark)) {
+                if (Text[NumberOfRows.value - 1].length > NumberSymbol + Mark - 2) {
+                    TextField.value = Text[NumberOfRows.value - 1].substring(NumberSymbol - Math.min(15, Mark));
+                }
+                var NumberDeleteCharacters = Text[NumberOfRows.value - 1].length - TextField.value.length + 1;
+            } else {
+                TextField.value = Text[NumberOfRows.value - 1];
+            }
+            //Укоротить строку
+
+            //Установить указатель                    
+            TextField.value = TextField.value.replace('➧', "");
+
+            if (NumberSymbol <= Math.min(15, Mark)) {
+                PointerPosition = EntryField.value.length;
+            } else if (Text[NumberOfRows.value - 1].length <= NumberSymbol + Mark - 2) {
+                PointerPosition = EntryField.value.length - NumberDeleteCharacters;
+            } else {
+                PointerPosition = Math.min(15, Mark);
+            }
+            var beforeSubStr = TextField.value.substring(0, PointerPosition);
+            var afterSubStr = TextField.value.substring(PointerPosition);
+            TextField.value = beforeSubStr + '➧' + afterSubStr;
+            //Установить указатель
+
+            //Обновить клавиатуру
+            if (UseAssistant.checked) {
+                var Symbol = TextField.value.substr(PointerPosition + 1, 1);
+                if (event.keyCode !== 16) {
+                    if (Arm.value === 'left') {
+                        UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase(), ArrayOfAdditionalCharactersLeftHand.indexOf(Symbol) !== -1); //toLowerCase()
+                    } else {
+                        UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase()); //toLowerCase()
+                    }
+                }
+            }
+            //Обновить клавиатуру
+
+
+            //Проверить Корректность Ввода
+            if (Text[NumberOfRows.value - 1].substring(0, EntryField.value.length) !== EntryField.value) {
+                errorSymbol = true;
+                EntryField.style.color = 'red';
+                EntryField.style.backgroundColor = "yellow";
+
+                if (event.keyCode !== 8) {
+                    ErrorsPerMinute++;
+                    audioPechatatError.currentTime = 0;
+                    audioPechatatError.play();
+                }
+            } else {
+                errorSymbol = false;
+                EntryField.style.color = 'black';
+                EntryField.style.backgroundColor = "transparent";
+            }
+            //Проверить Корректность Ввода
+
+            var result = ArrayOfStringLength.reduce(function (sum, current) {
+                return Number(sum) + Number(current);
+            }, 0);
+
+            var sresult = ArrayOfStringsLength.reduce(function (sum, current) {
+                return Number(sum) + Number(current);
+            }, 0);
+
+            //Определить скорость                                             
+            if (StartTime === null) {
+                StartTime = new Date();
+            }
+            ;
+
+            var PresentTime = new Date();
+            var Difference = PresentTime - StartTime;
+
+            Speed.style.backgroundColor = '';
+            DayRecord.style.backgroundColor = '';
+            Record.style.backgroundColor = '';
+
+
+            if (Difference > 60000) {//60000-минута
+
+                MinuteSet++;
+
+                if (result === 0) {
+                    ArrayOfStringLength.push(EntryField.value.length);
+                } else {
+                    ArrayOfStringLength.push(CharactersPerMinute.value);
+                }
+
+                StartTime = null;
+                ArrayOfStringsLength = [];
+
+
+                Speed.value = CharactersPerMinute.value;
+                Speed.style.backgroundColor = 'red';
+                if (Number(Speed.value) > Number(DayRecord.value)) {
+                    DayRecord.value = Speed.value;
+                    DayRecord.style.backgroundColor = 'blue';
+                    try {
+                        if (StatisticsSetForPeriod[StatisticsSetForPeriod.length - 1][0] === String(formatDate(new Date()))) {
+                            StatisticsSetForPeriod.pop();
+                        }
+                    } catch (e) {
+                    }
+                    StatisticsSetForPeriod.push([String(formatDate(new Date())), Number(DayRecord.value), ErrorsPerMinute]);
+                    var ChartStatisticsSetForPeriod = StatisticsSetForPeriod.slice(-15);
+                    ChartStatisticsSetForPeriod.unshift(['Дата', 'Скорость', 'Ошибки']);
+
+                    drawChart(ChartStatisticsSetForPeriod, chart_div2, 'День');
+                }
+
+                if (Number(Speed.value) > Number(Record.value)) {
+                    Record.value = Speed.value;
+                    Record.style.backgroundColor = 'blue';
+                }
+
+                StatisticsSet.push([String(MinuteSet), Number(Record.value), Number(Speed.value), ErrorsPerMinute]);
+                ErrorsPerMinute = 0;
+                CharactersPerMin = 0;
+                var ChartStatisticsSet = StatisticsSet.slice(-15);
+                ChartStatisticsSet.unshift(['Минута', 'Рекорд', 'Скорость', 'Ошибки']);
+
+                drawChart(ChartStatisticsSet, chart_div, 'Минута');
+            }
+            //Определить скорость
+
+
+
+        }
+
+        function EntryFieldkeypress(event) {
+
+            event.returnValue = false;
+            var Symbol = String.fromCharCode(event.keyCode);
+            if (!AltClamped) {
+
+                //Установить раскладку                                
+                var EnglishLayout = ArrayEnglishCharacters.indexOf(Symbol) !== -1;
+                var RussianLayout = ArrayRussianCharacters.indexOf(Symbol) !== -1;
+
+                if (EnglishLayout !== RussianLayout) {
+                    EnglishTextLayout = EnglishLayout;
+                }
+
+                if (EnglishTextLayout) {
+                    TextLayout.textContent = "En";
+                    TextLayout.style.color = "red";
+                } else {
+                    TextLayout.textContent = "Ru";
+                    TextLayout.style.color = "blue";
+                }
+                //Установить раскладку
+
+                if (СlampedGap === true) {
+                    if (event.keyCode !== 32) {
+                        Space = false;
+                        if (EnglishTextLayout) {
+                            Symbol = String.fromCharCode(MatchingKeys[keyCode]);
+                        } else {
+                            Symbol = String.fromCharCode(ComplianceWithRussianSymbols[MatchingKeys[keyCode]]);
+                        }
+                    }
+
+                }
+
+                if (UseShift) {
+                    if (ArrayOfServiceIndicators.indexOf(Symbol) !== -1 && !EnglishTextLayout) {
+                        Symbol = MatchingServiceDigits[Symbol];
+                    }
+                    //Дополнения по Ctrl
+                    if (UseCtrl) {
+                        if (Symbol === "=") {
+                            Symbol = "+";
+                        }
+                        if (Symbol === "\\" && !EnglishTextLayout) {
+                            Symbol = "/";
+                        }
+                        if (Symbol === "\"" && !EnglishTextLayout) {
+                            Symbol = "/";
+                        }
+                    }
+                    //Дополнения по Ctrl
+
+                    //Дополнения по Английской раскладке				
+                    if (ArrayOfServiceIndicatorsEn.indexOf(Symbol) !== -1 && EnglishTextLayout) {
+                        Symbol = MatchingServiceDigitsEn[Symbol];
+                    }
+                    ;
+                    //Дополнения по Английской раскладке                                                               
+                }
+
+                if (UseCtrl) {
+                    if (ArrayOfAdditionalCharactersLeftHand2.indexOf(Symbol) !== -1) {
+                        Symbol = ConformityAdditionalCharactersLeftHand[Symbol];
+                    }
+                    ;
+                }
+                ;
+                //Коррекция Английской раскладки
+                //if (Symbol === 1) Symbol = 2;                
+                //Коррекция Английской раскладки
+
+
+                //Ввод символа
+                if (UseShift) {
+                    EntryField.value = EntryField.value + Symbol.toUpperCase();
+                } else {
+                    EntryField.value = EntryField.value + Symbol.toLowerCase();
+                }
+                /*
+                if (!audioPechatat.ended) {
+                    audioPechatat.stop(); 
+                }
+                */
+                audioPechatat.currentTime = 0;
+                audioPechatat.play();
+                CharactersPerMin++;
+                CharactersPerMinute.value = CharactersPerMin;
+
+
+            }
+            Keyboard.focus();
+            //Ввод символа
+
+
+
+
+
+            //Сброс шифта
+            if (keyCode !== 16) {
+                UseShift = false;
+            }
+            //Сброс шифта
+
+            //Сброс Ctrl
+            if (keyCode !== 17) {
+                UseCtrl = false;
+            }
+            //Сброс Ctrl              
+        }
+
+        function UseTranslatorСhange() {
+
+            if (UseTranslator.checked) {
+                // Translation.hidden = false;
+            } else {
+                Translation.hidden = true;
+            }
+        }
+
+
+        function TranslateText() {
+
+            if (UseTranslator.checked) {
+                var text = '';
+
+                if (window.getSelection) {
+                    text = window.getSelection();
+                } else
+                    if (document.getSelection) {
+                        text = document.getSelection();
+                    } else
+                        if (document.selection) {
+                            text = document.selection.createRange().text;
+                        }
+
+                if (text.toString() !== mText && text.toString() !== '') {
+                    mText = text.toString();
+                    if (EnglishTextLayout) {
+                        //bingTranslator.src = 'https://www.bing.com/translator/?text='+text.toString()+'&from=en&to=ru#' + window.location.href;            
+                        openedWindow = window.open("https://translate.google.com/?hl=ru#en/ru/" + text.toString(), 'newwin');
+                    } else {
+                        //bingTranslator.src = 'https://www.bing.com/translator/?text='+text.toString()+'&from=ru&to=en#' + window.location.href;            
+                        openedWindow = window.open("https://translate.google.com/?hl=ru#ru/en/" + text.toString(), 'newwin');
+                    }
+                    // alert("Сейчас будет перевод");
+
+                }
+            }
+        }
+
+        function hashchange(e) {
+
+            // window.location.href = localStorage.getItem("href");
+
+            Translation.value = window.location.hash.replace('#', "");
+            //openedWindow.close();
+        }
+
+        function drawChart(ArrayChart, chartdiv, period) {
+
+
+            var data = google.visualization.arrayToDataTable(ArrayChart);
+            var options = {
+                title: 'Статистика набора',
+                hAxis: { title: period, titleTextStyle: { color: '#333' } },
+                vAxis: { minValue: 0 }
+            };
+
+            var chart = new google.visualization.AreaChart(chartdiv);
+            chart.draw(data, options);
+
+
+        }
+
+
+        function chart_div2ondblclick() {
+
+            if (KeyboardFolded && chart_div.style.width === '100px') {
+                KeyboardFolded = false;
+                chart_div2.style.width = '100px';
+                Keyboard.style.width = '800px';
+
+                var ChartStatisticsSetForPeriod = StatisticsSetForPeriod.slice(-15);
+                ChartStatisticsSetForPeriod.unshift(['Дата', 'Скорость', 'Ошибки']);
+                drawChart(ChartStatisticsSetForPeriod, chart_div2, 'День');
+                
+                
+                audioMusicBackground2.pause();
+            } else {
+                KeyboardFolded = true;
+                Keyboard.style.width = '0px';
+                chart_div.style.width = '100px';
+                chart_div2.style.width = '900px';
+
+                var ChartStatisticsSet = StatisticsSet.slice(-15);
+                ChartStatisticsSet.unshift(['Минута', 'Рекорд', 'Скорость', 'Ошибки']);
+                drawChart(ChartStatisticsSet, chart_div, 'Минута');
+
+                var ChartStatisticsSetForPeriod = StatisticsSetForPeriod.slice();
+                ChartStatisticsSetForPeriod.unshift(['Дата', 'Скорость', 'Ошибки']);
+                drawChart(ChartStatisticsSetForPeriod, chart_div2, 'День');
+                
+                audioMusicBackground2.addEventListener('ended', () => {
+                    audioMusicBackground2.currentTime = 0;
+                    audioMusicBackground2.play();
+                });
+                audioMusicBackground1.pause();
+                audioMusicBackground2.currentTime = 0;
+                audioMusicBackground2.play();
+            }
+        }
+
+        function chart_divondblclick() {
+
+            if (KeyboardFolded && chart_div2.style.width === '100px') {
+                KeyboardFolded = false;
+                chart_div.style.width = '100px';
+                Keyboard.style.width = '800px';
+
+                var ChartStatisticsSet = StatisticsSet.slice(-15);
+                ChartStatisticsSet.unshift(['Минута', 'Рекорд', 'Скорость', 'Ошибки']);
+                drawChart(ChartStatisticsSet, chart_div, 'Минута');
+
+                
+                audioMusicBackground1.pause();
+            } else {
+                KeyboardFolded = true;
+                Keyboard.style.width = '0px';
+                chart_div.style.width = '900px';
+                chart_div2.style.width = '100px';
+
+                var ChartStatisticsSet = StatisticsSet.slice();
+                ChartStatisticsSet.unshift(['Минута', 'Рекорд', 'Скорость', 'Ошибки']);
+                drawChart(ChartStatisticsSet, chart_div, 'Минута');
+
+                var ChartStatisticsSetForPeriod = StatisticsSetForPeriod.slice(-15);
+                ChartStatisticsSetForPeriod.unshift(['Дата', 'Скорость', 'Ошибки']);
+                drawChart(ChartStatisticsSetForPeriod, chart_div2, 'День');
+                audioMusicBackground1.addEventListener('ended', () => {
+                    audioMusicBackground1.currentTime = 0;
+                    audioMusicBackground1.play();
+                });
+                
+                audioMusicBackground2.pause();
+                audioMusicBackground1.currentTime = 0;
+                audioMusicBackground1.play();
+            }
+        }
+
+        function NumberOfRowschange() {
+            Progressbar.value = NumberOfRows.value;
+            TextField.value = '➧' + Text[NumberOfRows.value - 1];
+            EntryField.value = "";
+            //Обновить клавиатуру
+            if (UseAssistant.checked) {
+                var Symbol = TextField.value.substr(1, 1);
+                //alert(Symbol);
+                if (Arm.value === 'left') {
+                    UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase(), ArrayOfAdditionalCharactersLeftHand.indexOf(Symbol) !== -1); //toLowerCase()
+                } else {
+                    UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase()); //toLowerCase()
+                }
+            }
+            //Обновить клавиатуру
+            if (NumberOfRows.value > Text.length) {
+                EntryField.style.backgroundColor = "yellow";
+            } else {
+                EntryField.style.backgroundColor = "transparent";
+            }
+        }
+
+        function Armchange() {
+            //Обновить клавиатуру
+            if (UseAssistant.checked) {
+                var Symbol = TextField.value.substr(PointerPosition + 1, 1);
+                //alert(Symbol);
+                if (Arm.value === 'left') {
+                    UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase(), ArrayOfAdditionalCharactersLeftHand.indexOf(Symbol) !== -1); //toLowerCase()
+                } else {
+                    UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase()); //toLowerCase()
+                }
+            }
+            //Обновить клавиатуру
+        }
+
+        function FontSizechange(event) {
+            TextField.style.fontSize = FontSize.value + 'px';
+            EntryField.style.fontSize = FontSize.value + 'px';//'%';  
+            block.style.fontSize = FontSize.value + 'px';
+            Mark = Math.floor((50 + (50 - FontSize.value)) / (50 / 15) * (50 / FontSize.value));
+        }
+
+
+        function Keyboardfocus(event) {
+            EntryField.focus();
+        }
+
+        function formatDate(date) {
+
+            var dd = date.getDate();
+            if (dd < 10)
+                dd = '0' + dd;
+
+            var mm = date.getMonth() + 1;
+            if (mm < 10)
+                mm = '0' + mm;
+
+            var yy = date.getFullYear() % 100;
+            if (yy < 10)
+                yy = '0' + yy;
+
+            return dd + '.' + mm + '.' + yy;
+        }
+
+
+        function init() {
+            //alert("onload");                                
+            //alert(window.location.href);                                
+            EntryField = document.getElementById("EntryField");
+            TextField = document.getElementById("TextField");
+            NumberOfRows = document.getElementById("NumberOfRows");
+            Keyboard = document.getElementById("Keyboard");
+            AutomaticSwitchingLayouts = document.getElementById("AutomaticSwitchingLayouts");
+            TextLayout = document.getElementById("TextLayout");
+            Arm = document.getElementById("Arm");
+            FontSize = document.getElementById("FontSize");
+            UseAssistant = document.getElementById("UseAssistant");
+            Filetxt = document.getElementById("Filetxt");
+            Speed = document.getElementById("Speed");
+            CharactersPerMinute = document.getElementById("CharactersPerMinute");
+            Record = document.getElementById("Record");
+            DayRecord = document.getElementById("DayRecord");
+            LoadingIndicator = document.getElementById("LoadingIndicator");
+            ErrorLoading = document.getElementById("ErrorLoading");
+            Progressbar = document.getElementById("Progressbar");
+            chart_div = document.getElementById("chart_div");
+            chart_div2 = document.getElementById("chart_div2");
+            bingTranslator = document.getElementById("bingTranslator");
+            Translation = document.getElementById("Translation");
+            UseTranslator = document.getElementById("UseTranslator");
+
+            EntryField.addEventListener("keydown", EntryFieldkeydown);
+            EntryField.addEventListener("keyup", EntryFieldkeyup);
+            EntryField.addEventListener("keypress", EntryFieldkeypress);
+            NumberOfRows.addEventListener("change", NumberOfRowschange);
+            Arm.addEventListener("change", Armchange);
+            FontSize.addEventListener("change", FontSizechange);
+            Keyboard.addEventListener("focus", Keyboardfocus);
+            window.addEventListener("hashchange", hashchange);
+            UseTranslator.addEventListener("change", UseTranslatorСhange);
+
+
+            //Востановление значений
+            Arm.value = 'both';
+            if (localStorage.getItem("UseAssistant") !== null) {
+                Arm.value = localStorage.getItem("Arm");
+                FontSize.value = localStorage.getItem("FontSize");
+                NumberOfRows.value = localStorage.getItem("NumberOfRows");
+                Text = JSON.parse(localStorage.getItem("Text"));
+                UseAssistant.checked = localStorage.getItem("UseAssistant") === "true" ? true : false;
+                UseTranslator.checked = localStorage.getItem("UseTranslator") === "true" ? true : false;
+                Record.value = localStorage.getItem("Record");
+                StatisticsSetForPeriod = JSON.parse(localStorage.getItem("DayRecord"));
+                try {
+                    if (StatisticsSetForPeriod[StatisticsSetForPeriod.length - 1][0] === String(formatDate(new Date()))) {
+                        DayRecord.value = StatisticsSetForPeriod[StatisticsSetForPeriod.length - 1][1];
+                    }
+                } catch (e) {
+                }
+                var ChartStatisticsSetForPeriod = StatisticsSetForPeriod.slice(-15);
+                ChartStatisticsSetForPeriod.unshift(['Дата', 'Скорость', 'Ошибки']);
+
+                drawChart(ChartStatisticsSetForPeriod, chart_div2, 'День');
+
+                //Filetxt.files[0] = JSON.parse(localStorage.getItem("Filetxt"));
+                ////////09.03.2018-Запрещено браузером в целях безопасности 
+                /////////Filetxt.files[0] = localStorage.getItem("Filetxt");                    
+                /////////Filetxt.value = localStorage.getItem("Filetxtvalue");
+            } else {
+                window.open("https://translate.google.com/?hl=ru#" + window.location.href);
+            }
+            ;
+
+            TextField.value = '➧' + Text[NumberOfRows.value - 1];
+            //Обновить клавиатуру
+            if (UseAssistant.checked) {
+                var Symbol = TextField.value.substr(1, 1);
+                if (Arm.value === 'left') {
+                    UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase(), ArrayOfAdditionalCharactersLeftHand.indexOf(Symbol) !== -1); //toLowerCase()
+                } else {
+                    UpdateKeyboard(Symbol, Symbol === Symbol.toUpperCase()); //toLowerCase()
+                }
+            }
+            //Обновить клавиатуру
+            LoadingIndicator.hidden = true;
+            ErrorLoading.hidden = true;
+            //bingTranslator.hidden = true;
+            Translation.hidden = true;
+            FontSizechange();
+            EntryField.focus();
+        }
+
+        function fin() {
+            alert("fin");
+            //Сохранение значений
+            localStorage.setItem("Arm", Arm.value);
+            localStorage.setItem("FontSize", FontSize.value);
+            localStorage.setItem("NumberOfRows", NumberOfRows.value);
+            localStorage.setItem("Text", JSON.stringify(Text));
+            localStorage.setItem("UseAssistant", UseAssistant.checked);
+            localStorage.setItem("UseTranslator", UseTranslator.checked);
+            localStorage.setItem("Record", Record.value);
+            localStorage.setItem("DayRecord", JSON.stringify(StatisticsSetForPeriod));
+            localStorage.setItem("Filetxtvalue", Filetxt.value);
+            //localStorage.setItem("Filetxt", JSON.stringify(Filetxt.files[0]));
+            localStorage.setItem("Filetxt", Filetxt.files[0]);
+            localStorage.setItem("href", window.location.href);
+            //localStorage.clear();
+        }
+
+    </script>
+
+    <script>
+        function speak(text) {
+            const message = new SpeechSynthesisUtterance();
+            message.lang = "ru-RU";
+            message.text = text;
+            window.speechSynthesis.speak(message);
+        };
+    </script>
+    <script>
+
+        function speech() {
+            const message = new SpeechSynthesisUtterance();
+            message.lang = "ru-RU";
+            message.text = 'Какой-то текст';
+            window.speechSynthesis.speak(message);
+
+            //let browserType = 'mozilla';
+            //var str = 'абвгдеёжзи';
+
+            //var block = document.getElementById("block");
+            //block.innerText = <span class="colortext">str.substr(1, 2)</span>
+            //block.innerText = '<span>'+str.substr(1, 2)+'</span>';
+            //$('#demo').append('<span>'+$('textbox').val()+'</span>');
+            //$('#block').append('<span class="colortext">'+'<br>'+str.substr(1,3 )+'</span>');
+            var original = 'абвгдеёжзи';
+            var answer = 'алвгдеёкзи';
+            var comparison = original + ' ' + answer;
+            //setText(comparison);
+
+            var str = '';
+            for (var i = 0; i < comparison.length; i++) {
+                if (i <= original.length) {
+                    if (i == 2) {
+                        str.append('<span class="greycolortext">' + comparison.substr(i, 1) + '</span>');
+                    }
+                    str.append('<span class="bluecolortext">' + comparison.substr(i, 1) + '</span>');
+                } else {
+                    if (i == original.length + 1) {
+                        str.append('<br>');
+                    }
+                    str.append('<span class="redcolortext">' + comparison.substr(i, 1) + '</span>');
+                }
+
+            }
+
+            var size = 6;
+            spanResultСomparison.innerHTML = "<font color=\"#001aff\" size=\"50\"" + comparison + "</font>";
+            //exit_str;
+
+
+
+            ////////////////////////
+            //////////////////////////
+            //var str = "Hello World";
+            //str = str.replaceAt(5, '_');
+
+
+
+            //block.textContent = block.textContent.replaceAt(2, '<span class="greycolortext">' + comparison.substr(2, 1) + '</span>');
+            //$('#block').replaceWith("<span>Заменили</span>");              
+
+        };
+
+
+    </script>
+
+</head>
+
+<body onload=init() onunload=fin()>
+    <div align="center">
+
+        Символов за минуту:<input id="Speed" type="number" disabled style="width: 35px;">
+        <input id="CharactersPerMinute" type="number" disabled style="width: 35px;">
+        Рекорд:<input id="Record" type="number" disabled style="width: 35px;">
+        Рекорд дня:<input id="DayRecord" type="number" disabled style="width: 35px;">
+        <br><br>
+        <input id="TextField" size="30" style="font-size: 50px; width: 800px;"><br>
+        <input id="EntryField" size="30" style="font-size: 50px; width: 800px;" onselect=TranslateText()><br><!-- -->
+        <textarea id="editor" rows="2" cols="45" name="text">
+                текст
+            </textarea>
+
+        <!--<div id="blockСomparison" class="comparison" style="font-size: 50px; width: 800px;">-->
+        <span id="spanResultСomparison"></span>
+
+        <input id="LoadingIndicator" type=image src="Keyboard/12205100050348185.gif" width=30 height=30
+            alt="Loading indicator">
+        <input id="ErrorLoading" type=image src="Keyboard/error loading.png" width=334 height=83
+            alt="Loading indicator">
+        <input Id="Filetxt" onchange=OpenFile() type="file" accept=".txt">
+        <progress Id="Progressbar" value="0"></progress><br>
+
+        <table>
+            <tr>
+                <td>
+                    <div id="chart_div" style="height: 267px; width: 100px" ondblclick="chart_divondblclick()"></div>
+                </td>
+                <td><input id="Keyboard" type=image src="Keyboard/RH/Клавиатура.png" width=800 height=267 alt="Keyboard"
+                        style="width: 800px">
+                </td>
+                <td>
+                    <div id="chart_div2" style=" height: 267px; width: 100px;" ondblclick="chart_div2ondblclick()">
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        Строка:<input id="NumberOfRows" type="number" value=1 min=1 placeholder="Номер строки" style="width: 65px;">
+        Рука:<input id="Arm" list="hand" placeholder="Обе" style="width: 65px;" onclick="value = '';">
+        <datalist id="hand">
+            <option value="both" label="Обе">
+            <option value="right" label="Правая">
+            <option value="left" label="Левая">
+        </datalist>
+        Шрифт:<input id="FontSize" type="number" value=50 min=11 max=99 placeholder="Размер шрифта"
+            style="width: 30px;">
+        <input id="UseAssistant" type="checkbox" checked>Помощник.
+        <input id="UseTranslator" type="checkbox">Переводчик.
+        Раскладка:<span id="TextLayout"></span><br>
+        <input id="Translation" size="30" style="font-size: 25px; width: 800px;">
+    </div>
+
+
+
+
+</body>
+
+</html>
