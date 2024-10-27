@@ -37,6 +37,8 @@
             var ErrorsPerMinute = 0;
             var mText = '';
             var openedWindow = "about:blank";
+            var errorSymbol = false;
+            var CharactersPerMin = 0;
 
             var i;
 
@@ -769,6 +771,9 @@
                     //event.preventDefault();
                     event.returnValue = false;
                     AltClamped = true;
+
+                    EntryField.value = EntryField.value + TextField.value.substr(PointerPosition + 1, 1);
+                    Keyboard.focus();
                 }
                 //Alt
 
@@ -804,6 +809,12 @@
                 if (event.repeat && keyCode !== 8) {
                     event.returnValue = false;
                     Space = false;
+                }
+
+                
+                if (keyCode === 8) {
+                    CharactersPerMin <= 0 ? 0 : CharactersPerMin--;
+                    CharactersPerMinute.value = CharactersPerMin;
                 }
 
                 //Проверить окончание строки
@@ -845,15 +856,19 @@
 
             function EntryFieldkeyup(event) {
 
+                
+
                 if (!event.altKey) {
                     AltClamped = false;
                 }
+                
 
                 if (event.keyCode === 32) {
                     СlampedGap = false;
                     if (Space === true) {
                         EntryField.value = EntryField.value + ' ';
-                        Keyboard.focus();
+                        //Keyboard.focus();
+                        EntryField.focus();
                     }
                     if (!UseAssistant.checked) {
                         Keyboard.src = "Keyboard/RH/Клавиатура.png";
@@ -861,7 +876,8 @@
                 }
                 NumberSymbol = EntryField.value.length;
 
-                //Укоротить строку                
+                //Укоротить строку 
+                               
                 if (NumberSymbol > Math.min(15, Mark)) {
                     if (Text[NumberOfRows.value - 1].length > NumberSymbol + Mark - 2) {
                         TextField.value = Text[NumberOfRows.value - 1].substring(NumberSymbol - Math.min(15, Mark));
@@ -871,7 +887,7 @@
                     TextField.value = Text[NumberOfRows.value - 1];
                 }
                 //Укоротить строку
-
+                
                 //Установить указатель                    
                 TextField.value = TextField.value.replace('➧', "");
 
@@ -903,19 +919,102 @@
 
                 //Проверить Корректность Ввода
                 if (Text[NumberOfRows.value - 1].substring(0, EntryField.value.length) !== EntryField.value) {
+                    errorSymbol = true;
                     EntryField.style.color = 'red';
+                    EntryField.style.backgroundColor = "yellow";
+                            
                     if (event.keyCode !== 8) {
                         ErrorsPerMinute++;
                     }
                 } else {
+                    errorSymbol = false;
                     EntryField.style.color = 'black';
+                    EntryField.style.backgroundColor = "transparent";
                 }
                 //Проверить Корректность Ввода
 
-                if (AltClamped) {
-                    EntryField.value = EntryField.value + TextField.value.substr(PointerPosition + 1, 1);
-                    Keyboard.focus();
+                var result = ArrayOfStringLength.reduce(function (sum, current) {
+                    return Number(sum) + Number(current);
+                }, 0);
+
+                var sresult = ArrayOfStringsLength.reduce(function (sum, current) {
+                    return Number(sum) + Number(current);
+                }, 0);
+
+                //Определить скорость                                             
+                if (StartTime === null) {
+                    StartTime = new Date();
                 }
+                ;
+
+                var PresentTime = new Date();
+                var Difference = PresentTime - StartTime;
+
+                Speed.style.backgroundColor = '';
+                DayRecord.style.backgroundColor = '';
+                Record.style.backgroundColor = '';
+
+                //CharactersPerMinute.value = (Characters - result)<0 ? 0:(Characters - result);
+
+                //var Characters = EntryField.value.length - result + sresult;
+                //CharactersPerMinute.value = Characters < 0 ? 0 : Characters;
+                if (!AltClamped && !errorSymbol) {
+                    //var Characters = EntryField.value.length - result + sresult;
+                    //CharactersPerMinute.value = Characters < 0 ? 0 : Characters;
+                    
+                    
+                }
+                
+
+                if (Difference > 60000) {//60000-минута
+
+                    MinuteSet++;
+
+                    if (result === 0) {
+                        ArrayOfStringLength.push(EntryField.value.length);
+                    } else {
+                        ArrayOfStringLength.push(CharactersPerMinute.value);
+                    }
+
+                    StartTime = null;
+                    ArrayOfStringsLength = [];
+
+
+                    Speed.value = CharactersPerMinute.value;
+                    Speed.style.backgroundColor = 'red';
+                    if (Number(Speed.value) > Number(DayRecord.value)) {
+                        DayRecord.value = Speed.value;
+                        DayRecord.style.backgroundColor = 'blue';
+                        try {
+                            if (StatisticsSetForPeriod[StatisticsSetForPeriod.length - 1][0] === String(formatDate(new Date()))) {
+                                StatisticsSetForPeriod.pop();
+                            }
+                        } catch (e) {
+                        }
+                        StatisticsSetForPeriod.push([String(formatDate(new Date())), Number(DayRecord.value), ErrorsPerMinute]);
+                        var ChartStatisticsSetForPeriod = StatisticsSetForPeriod.slice(-15);
+                        ChartStatisticsSetForPeriod.unshift(['Дата', 'Скорость', 'Ошибки']);
+
+                        drawChart(ChartStatisticsSetForPeriod, chart_div2, 'День');
+                    }
+
+                    if (Number(Speed.value) > Number(Record.value)) {
+                        Record.value = Speed.value;
+                        Record.style.backgroundColor = 'blue';
+                    }
+
+                    StatisticsSet.push([String(MinuteSet), Number(Record.value), Number(Speed.value), ErrorsPerMinute]);
+                    ErrorsPerMinute = 0;
+                    CharactersPerMin = 0;
+                    var ChartStatisticsSet = StatisticsSet.slice(-15);
+                    ChartStatisticsSet.unshift(['Минута', 'Рекорд', 'Скорость', 'Ошибки']);
+
+                    drawChart(ChartStatisticsSet, chart_div, 'Минута');
+                }
+                //Определить скорость
+
+                
+                
             }
 
             function EntryFieldkeypress(event) {
@@ -991,90 +1090,23 @@
                     //Коррекция Английской раскладки
 
 
-                    //Ввод символа                                
+                    //Ввод символа
                     if (UseShift) {
                         EntryField.value = EntryField.value + Symbol.toUpperCase();
                     } else {
                         EntryField.value = EntryField.value + Symbol.toLowerCase();
                     }
-
+                    CharactersPerMin++;
+                    CharactersPerMinute.value = CharactersPerMin;
+                    
+                    
                 }
                 Keyboard.focus();
                 //Ввод символа
 
 
 
-                //Определить скорость                                             
-                if (StartTime === null) {
-                    StartTime = new Date();
-                }
-                ;
-
-                var PresentTime = new Date();
-                var Difference = PresentTime - StartTime;
-
-                Speed.style.backgroundColor = '';
-                DayRecord.style.backgroundColor = '';
-                Record.style.backgroundColor = '';
-
-                var result = ArrayOfStringLength.reduce(function (sum, current) {
-                    return Number(sum) + Number(current);
-                }, 0);
-
-                var sresult = ArrayOfStringsLength.reduce(function (sum, current) {
-                    return Number(sum) + Number(current);
-                }, 0);
-
-                //CharactersPerMinute.value = (Characters - result)<0 ? 0:(Characters - result);
-                var Characters = EntryField.value.length - result + sresult;
-                CharactersPerMinute.value = Characters < 0 ? 0 : Characters;
-
-                if (Difference > 60000) {//60000-минута
-
-                    MinuteSet++;
-
-                    if (result === 0) {
-                        ArrayOfStringLength.push(EntryField.value.length);
-                    } else {
-                        ArrayOfStringLength.push(CharactersPerMinute.value);
-                    }
-
-                    StartTime = null;
-                    ArrayOfStringsLength = [];
-                    //Speed.value = CharactersPerMinute.value;
-
-
-                    Speed.value = CharactersPerMinute.value;
-                    Speed.style.backgroundColor = 'red';
-                    if (Number(Speed.value) > Number(DayRecord.value)) {
-                        DayRecord.value = Speed.value;
-                        DayRecord.style.backgroundColor = 'blue';
-                        try {
-                            if (StatisticsSetForPeriod[StatisticsSetForPeriod.length - 1][0] === String(formatDate(new Date()))) {
-                                StatisticsSetForPeriod.pop();
-                            }
-                        } catch (e) {
-                        }
-                        StatisticsSetForPeriod.push([String(formatDate(new Date())), Number(DayRecord.value), ErrorsPerMinute]);
-                        var ChartStatisticsSetForPeriod = StatisticsSetForPeriod.slice(-15);
-                        ChartStatisticsSetForPeriod.unshift(['Дата', 'Скорость', 'Ошибки']);
-
-                        drawChart(ChartStatisticsSetForPeriod, chart_div2, 'День');
-                    }
-
-                    if (Number(Speed.value) > Number(Record.value)) {
-                        Record.value = Speed.value;
-                        Record.style.backgroundColor = 'blue';
-                    }
-
-                    StatisticsSet.push([String(MinuteSet), Number(Record.value), Number(Speed.value), ErrorsPerMinute]);
-                    ErrorsPerMinute = 0;
-                    var ChartStatisticsSet = StatisticsSet.slice(-15);
-                    ChartStatisticsSet.unshift(['Минута', 'Рекорд', 'Скорость', 'Ошибки']);
-
-                    drawChart(ChartStatisticsSet, chart_div, 'Минута');
-                }
-                //Определить скорость                           
+                                           
 
                 //Сброс шифта
                 if (keyCode !== 16) {
