@@ -40,7 +40,9 @@
             var errorSymbol = false;
             var CharactersPerMin = 0;
             const audioPechatat = new Audio('Keyboard/pechatat.mp3');
-
+            const audioPechatatBackspace = new Audio('Keyboard/pechatatBackspace.mp3');
+            const audioPechatatEnter = new Audio('Keyboard/pechatatEnter.mp3');
+            const audioPechatatError = new Audio('Keyboard/pechatatError.mp3');
             var i;
 
             for (i = 0; i < 300; i++) {
@@ -816,10 +818,14 @@
                 if (keyCode === 8) {
                     CharactersPerMin <= 0 ? 0 : CharactersPerMin--;
                     CharactersPerMinute.value = CharactersPerMin;
+                    audioPechatatBackspace.currentTime = 0;
+                    audioPechatatBackspace.play();
                 }
 
                 //Проверить окончание строки
                 if (keyCode === 13 || keyCode === 20) {
+                    audioPechatatEnter.currentTime = 0;
+                    audioPechatatEnter.play();
                     //alert('13');                    
                     if (Text[NumberOfRows.value - 1].slice(0, -1) === EntryField.value) {
 
@@ -926,6 +932,8 @@
                             
                     if (event.keyCode !== 8) {
                         ErrorsPerMinute++;
+                        audioPechatatError.currentTime = 0;
+                        audioPechatatError.play();
                     }
                 } else {
                     errorSymbol = false;
